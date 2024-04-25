@@ -6,17 +6,12 @@ export default function Dashboard() {
 
   const [outputText, setOutputText] = useState([]);
 
-  
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-   
     const words = input.split(" ");
 
-    
     console.log("words", words);
-    
   };
 
   return (
