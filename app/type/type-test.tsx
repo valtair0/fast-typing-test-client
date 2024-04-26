@@ -185,6 +185,31 @@ export default function TypeTest() {
       whenTimerEnds();
       console.log("Timer bitti");
     }
+
+
+
+  fetch("https://localhost:7058/api/TypingExam/Create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "text": JSON.stringify(words.kelimeler),
+      "languageID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "categoryID": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+
+
+
   }, [isStarted, timer]);
 
   //submit the input
