@@ -1,7 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const words = {
-  kelimeler: [
+export default function TypeTest() {
+  const [input, setInput] = useState("");
+  const [selected, setSelected] = useState(0);
+  const selectedWordRef = useRef<HTMLSpanElement | null>(null);
+  const [correctWords, setCorrectWords] = useState<number[]>([]);
+  const [wrongWords, setWrongWords] = useState<number[]>([]);
+  const [timer, setTimer] = useState(60);
+  const [isStarted, setIsStarted] = useState(false);
+  const [correctKeystrokes, setCorrectKeystrokes] = useState<number>(0);
+  const [wrongKeystrokes, setWrongKeystrokes] = useState<number>(0);
+  const [category, setCategory] = useState<string>("Zor");
+  const [language, setLanguage] = useState<string>("Turkish");
+  const [selectedTextFromDb, setSelectedTextFromDb] = useState<string[]>([]);
+  const [selectedText, setSelectedText] = useState<string>("");
+
+  const [testwords, SetTestWords] = useState<string[]>([
     "bilgisayar",
     "klavye",
     "ekran",
@@ -132,19 +146,7 @@ const words = {
     "uyku",
     "gezi",
     "tatil",
-  ],
-};
-
-export default function TypeTest() {
-  const [input, setInput] = useState("");
-  const [selected, setSelected] = useState(0);
-  const selectedWordRef = useRef<HTMLSpanElement | null>(null);
-  const [correctWords, setCorrectWords] = useState<number[]>([]);
-  const [wrongWords, setWrongWords] = useState<number[]>([]);
-  const [timer, setTimer] = useState(60);
-  const [isStarted, setIsStarted] = useState(false);
-  const [correctKeystrokes, setCorrectKeystrokes] = useState<number>(0);
-  const [wrongKeystrokes, setWrongKeystrokes] = useState<number>(0);
+  ]);
 
   const checkInput = (text: string) => {
     if (!isStarted) {
@@ -156,7 +158,7 @@ export default function TypeTest() {
     }
 
     if (selectedWordRef.current) {
-      if (words.kelimeler[selected].startsWith(text.trim())) {
+      if (testwords[selected].startsWith(text.trim())) {
         selectedWordRef.current.style.color = "#22C55E";
       } else {
         selectedWordRef.current.style.color = "#EF4444";
@@ -168,7 +170,7 @@ export default function TypeTest() {
     }
   };
 
-  const whenTimerEnds = () => { };
+  const whenTimerEnds = () => {};
 
   const scrollToElement = (ref: HTMLSpanElement) => {
     ref.scrollIntoView({ behavior: "smooth" });
@@ -186,31 +188,37 @@ export default function TypeTest() {
       console.log("Timer bitti");
     }
 
+    fetch(
+      `https://localhost:7058/api/TypingExam/GetTypingExams?language=${language}&category=${category}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setSelectedTextFromDb(
+          data.data.map((item: { name: string }) => item.name)
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
 
+    fetch(
+      `https://localhost:7058/api/TypingExam/GetTypingExams?language=${language}&category=${category}${
+        selectedText != "" ? `&name=${selectedText}` : ""
+      }`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
 
-  fetch("https://localhost:7058/api/TypingExam/Create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      "text": JSON.stringify(words.kelimeler),
-      "languageID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "categoryID": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-
-
-
-
-  }, [isStarted, timer]);
+        if (data.data.length === 1) {
+          const words = JSON.parse(data.data[0].text);
+          SetTestWords(words);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [category, isStarted, language, selectedText, timer]);
 
   //submit the input
   const submitInput = () => {
@@ -223,7 +231,7 @@ export default function TypeTest() {
       return;
     }
 
-    if (input.trim() === words.kelimeler[selected]) {
+    if (input.trim() === testwords[selected]) {
       console.log("correct");
       setSelected(selected + 1);
       setInput("");
@@ -247,26 +255,89 @@ export default function TypeTest() {
       <section>
         <div className="py-16">
           <div className="mx-auto px-6 max-w-7xl text-white">
+            <form className="mx-auto flex mb-6">
+              <label
+                htmlFor="selectedText"
+                className="mb-2 mt-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Select a text
+              </label>
+              <select
+                id="selectedText"
+                onChange={(e) => {
+                  setSelectedText(e.target.value);
+                }}
+                className="border border-gray-300 bg-[#17181D] text-white text-sm rounded-lg block p-2.5  "
+              >
+                <option defaultValue={""}>Choose a text</option>
 
+                {selectedTextFromDb.map((item, key) => (
+                  <option value={item} key={key}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+
+              <div className="mx-auto flex">
+                <label
+                  htmlFor="categories"
+                  className="mb-2 mt-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Select an category
+                </label>
+                <select
+                  id="categories"
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                  }}
+                  className="border border-gray-300 bg-[#17181D] text-white text-sm rounded-lg block p-2.5  "
+                >
+                  <option defaultValue={"Zor"}>Choose a category</option>
+                  <option value="Kolay">Kolay</option>
+                  <option value="Orta">Orta</option>
+                  <option value="Zor">Zor</option>
+                </select>
+              </div>
+
+              <label
+                htmlFor="languages"
+                className="mb-2 mt-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Select an language
+              </label>
+              <select
+                id="languages"
+                onChange={(e) => {
+                  setLanguage(e.target.value);
+                }}
+                className="border border-gray-300 bg-[#17181D] text-white text-sm rounded-lg block p-2.5  "
+              >
+                <option defaultValue={"Turkish"}>Choose a language</option>
+                <option value="Turkish">Turkish</option>
+                <option value="English">English</option>
+              </select>
+            </form>
             <div className="flex justify-center items-center mb-10 ">
               <span className="text-white text-3xl  ">
-                Total Words: {words.kelimeler.length - (correctWords.length + wrongWords.length)}
+                Total Words:{" "}
+                {testwords.length - (correctWords.length + wrongWords.length)}
               </span>
             </div>
 
             <div className="relative group p-4 rounded-xl border border-white bg-[#17181D]">
               <div className="mt-6 pb-6 ">
                 <div className="overflow-hidden max-h-20 text-3xl">
-                  {words.kelimeler.map((item, key) => (
+                  {testwords.map((item, key) => (
                     <span
                       className={`
                           inline-block
                           my-1 
                           mx-4
-                          ${key == selected
-                          ? `text-[#F3B308] bg-gray-800 `
-                          : null
-                        }
+                          ${
+                            key == selected
+                              ? `text-[#F3B308] bg-gray-800 `
+                              : null
+                          }
                           ${correctWords.includes(key) ? "text-[#22C55E] " : ""}
                           ${wrongWords.includes(key) ? "text-[#EF4444]" : ""}
 
@@ -304,38 +375,37 @@ export default function TypeTest() {
       </div>
 
       <div className="flex justify-center items-center mt-6">
-
-        <a href="#" className="block py-10 p-6 bg-[#17181D] border border-white mt-10  rounded-lg shadow  ">
-
-
-        <div className="flex justify-center items-center ">
-        <span>Timer {timer}</span>
-        <span className="block mx-24">
-          Doğru Cümleler:{correctWords.length}
-        </span>
-        <span>Yanlış Cümleler:{wrongWords.length}</span>
-      </div>
-
-
-        <div className="flex justify-center items-center my-10">
-        <span>
-          Keystorkes:
-          <span>
-            <span className="text-[#22C55E] mx-2">
-              Correct: {correctKeystrokes}
+        <a
+          href="#"
+          className="block py-10 p-6 bg-[#17181D] border border-white mt-10  rounded-lg shadow  "
+        >
+          <div className="flex justify-center items-center ">
+            <span>Timer {timer}</span>
+            <span className="block mx-24">
+              Doğru Cümleler:{correctWords.length}
             </span>
+            <span>Yanlış Cümleler:{wrongWords.length}</span>
+          </div>
 
-            <span className="text-[#EF4444] mx-2">
-              Wrong: {wrongKeystrokes}
-            </span>
+          <div className="flex justify-center items-center my-10">
+            <span>
+              Keystorkes:
+              <span>
+                <span className="text-[#22C55E] mx-2">
+                  Correct: {correctKeystrokes}
+                </span>
 
-            <span className="text-[#F3B308] mx-2">
-              Total: {correctKeystrokes + wrongKeystrokes}
+                <span className="text-[#EF4444] mx-2">
+                  Wrong: {wrongKeystrokes}
+                </span>
+
+                <span className="text-[#F3B308] mx-2">
+                  Total: {correctKeystrokes + wrongKeystrokes}
+                </span>
+              </span>
             </span>
-          </span>
-        </span>
-      </div>
-           
+          </div>
+
           <div className="flex justify-center items-center mt-6">
             <span className="text-purple-300 ">
               WPM(words per minute): {correctKeystrokes / 5}
@@ -343,9 +413,6 @@ export default function TypeTest() {
           </div>
         </a>
       </div>
-
-
-
     </div>
   );
 }

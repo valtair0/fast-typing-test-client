@@ -1,42 +1,27 @@
 "use client";
-
-import { useEffect, useRef } from "react";
-import "./style.css";
+import { headers } from "next/headers";
 import Navbar from "./navbar/navbar";
-import TypeTest from "./type/type-test";
-
-const cursorOffset = (e: any, ref: any) => {
-  const rect = ref.current.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  ref.current.style.setProperty("--cursor-x", x + "px");
-  ref.current.style.setProperty("--cursor-y", y + "px");
-};
+import "./style.css";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const ref = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => cursorOffset(e, ref);
-    const currentRef = ref.current;
-    currentRef?.addEventListener("mousemove", handleMouseMove);
-    return () => currentRef?.removeEventListener("mousemove", handleMouseMove);
+    
   }, []);
 
   return (
     <main>
-      <div className="page-wrapper">
-        <div className="w-embed"></div>
-        <main>
-          <header className="home-hero" ref={ref}>
-            <div className="home-hero-bg-wrap">
-              <div className="home-hero-bg-tiles"></div>
-            </div>
-            <Navbar />
-            <TypeTest />
-          </header>
-        </main>
-      </div>
+      <Navbar />
+
+      <section className="wrapper">
+        <div className="hero"></div>
+        <div className="content">
+          <h1 className="h1--scalingSize" data-text="An awesome title">
+            An awesome title
+          </h1>
+          <input type="checkbox" id="switch" />
+        </div>
+      </section>
     </main>
   );
 }
