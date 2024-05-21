@@ -5,23 +5,21 @@ import "./style.css";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
-    <main>
-      <Navbar />
+    <main className="dark:bg-[#000]">
+
 
       <section className="wrapper">
-        <div className="hero"></div>
+        <div className="heroLight dark:heroDark "></div>
         <div className="content">
-          <h1 className="h1--scalingSize" data-text="An awesome title">
-            An awesome title
+          <h1 className="h1--scalingSize" data-text="Test Your Keyboard Speed">
+            Test Your Keyboard Speed
           </h1>
-          <input type="checkbox" id="switch" />
         </div>
       </section>
+
     </main>
   );
 }

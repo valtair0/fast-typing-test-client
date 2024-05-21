@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from "react";
 
 export default function TypeTest() {
@@ -189,7 +190,7 @@ export default function TypeTest() {
     }
 
     fetch(
-      `https://localhost:7058/api/TypingExam/GetTypingExams?language=${language}&category=${category}`
+      `https://localhost:7248/api/TypingExam/GetTypingExams?language=${language}&category=${category}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -202,7 +203,7 @@ export default function TypeTest() {
       });
 
     fetch(
-      `https://localhost:7058/api/TypingExam/GetTypingExams?language=${language}&category=${category}${
+      `https://localhost:7248/api/TypingExam/GetTypingExams?language=${language}&category=${category}${
         selectedText != "" ? `&name=${selectedText}` : ""
       }`
     )

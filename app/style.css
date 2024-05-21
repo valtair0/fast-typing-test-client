@@ -1,19 +1,8 @@
-/*houdini*/
 @property --blink-opacity {
   syntax: "<number>";
   inherits: false;
   initial-value: 1;
 }
-
-/* #fallback @keyframes blink-animation {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}*/
 
 @keyframes blink-animation {
   0%,
@@ -24,9 +13,7 @@
     opacity: 0;
   }
 }
-/*houdini*/
 
-/*base*/
 :root {
   font-family: Inter, sans-serif;
 
@@ -40,8 +27,6 @@ body {
   place-items: flex-start center;
   background: var(--bg);
 }
-
-/*custom*/
 
 @keyframes smoothBg {
   from {
@@ -103,24 +88,32 @@ body {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --stripe-color: #000;
   }
   .hero {
     filter: blur(10px) opacity(50%) saturate(200%);
   }
-}
-
-
-
-/* :has(:checked) {
-  --stripe-color: #000;
-}
-:has(:checked) .hero,
-:has(:checked) .hero::after {
-  filter: blur(10px) opacity(50%) saturate(200%);
 } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .content {
   position: absolute;
@@ -150,7 +143,6 @@ body {
   }
 }
 
-/*challenge*/
 .h1--scalingSize::before {
   content: attr(data-text);
   position: absolute;

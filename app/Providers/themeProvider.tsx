@@ -1,3 +1,4 @@
+"use client";
 import { getCookie, setCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 
@@ -20,7 +21,7 @@ export default function ThemeProvider() {
   };
 
   return (
-    <div>
+    <div >
       <button
         onClick={() => {
           changeTheme("dark");
