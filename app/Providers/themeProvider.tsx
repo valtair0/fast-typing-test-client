@@ -21,7 +21,7 @@ export default function ThemeProvider() {
   };
 
   return (
-    <div >
+    <div className="mt-1 ">
       <button
         onClick={() => {
           changeTheme("dark");
@@ -68,7 +68,6 @@ export default function ThemeProvider() {
           changeTheme("light");
         }}
         className="mx-auto hidden dark:block"
-        
       >
         <svg
           width="25px"

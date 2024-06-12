@@ -4,6 +4,7 @@ type UserResponse = {
   accessToken: string;
   accessTokenExpiration: string;
   refreshToken: string;
+  name: string;
 };
 
 export class UserService {
@@ -16,7 +17,7 @@ export class UserService {
         controller: "User/Login",
       },
       user
-    ).then((response:any) => {
+    ).then((response: any) => {
       return response.token;
     });
   }

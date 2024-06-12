@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cousine } from "next/font/google";
 import "./globals.css";
 import { headers } from "next/headers";
 import Navbar from "./navbar/navbar";
 
-
-const inter = Inter({ subsets: ["latin"] });
+const cousine = Cousine({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,13 +24,13 @@ export default async function RootLayout({
   const theme = cookies?.split(";").find((cookie) => cookie.includes("theme"));
   const selectedTheme = theme?.split("=")[1];
 
-
-
   return (
     <html lang="en" className={selectedTheme}>
-      <body className={inter.className}>
-        <Navbar />
-        {children}
+      <body className={cousine.className}>
+        <div className="dark:bg-gray-900 bg-gray-100  h-[100vh]">
+          <Navbar />
+          {children}
+        </div>
       </body>
     </html>
   );

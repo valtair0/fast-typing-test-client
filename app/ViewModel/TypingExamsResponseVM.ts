@@ -1,5 +1,5 @@
 export type TypingExamsResponseVM = {
-  name: string;
+  id: string;
   text: string[];
   language: string;
   category: string;
